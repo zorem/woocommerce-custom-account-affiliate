@@ -73,9 +73,8 @@ Project Link: [https://github.com/yourusername/woocommerce-custom-account-affili
 - [WooCommerce](https://woocommerce.com/)
 - [Affiliate for WooCommerce](https://woocommerce.com/products/affiliate-for-woocommerce/)
 - [React.js](https://reactjs.org/)
-```
 
-## Customization Tips:
+### Customization Tips:
 
 - **Project Details**: Be sure to replace placeholders (like `https://github.com/yourusername/woocommerce-custom-account-affiliate`) with the actual details of your project.
 - **Features and Configuration**: Provide more specific details about the features of your plugin and any configuration steps that users need to follow.
