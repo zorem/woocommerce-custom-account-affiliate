@@ -1,6 +1,3 @@
-Certainly! Creating a comprehensive README file is crucial for any GitHub repository as it explains what the project is about, how to set it up, and how to use it. Below is a template for your WooCommerce plugin store's README file. You can customize it further based on your specific requirements and project details.
-
-```markdown
 # WooCommerce Custom My Account Area with Affiliate Integration
 
 This project extends WooCommerce by creating a custom My Account area using React.js, tailored to integrate seamlessly with the Affiliate for WooCommerce plugin. It addresses the limitation of the Affiliate for WooCommerce plugin not adding its page to a custom My Account area by providing a custom endpoint for affiliate functionality within our React-based My Account area.
