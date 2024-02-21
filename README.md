@@ -64,7 +64,6 @@ This project is compatible with the following plugins and extensions:
 
     public function zorem_affiliate_dashboard(WP_REST_Request $request) {
         global $wpdb;
-        // $html = do_shortcode('[afwc_dashboard]');
         $user_id = get_current_user_id();
  
         if ($user_id !== 0) {
