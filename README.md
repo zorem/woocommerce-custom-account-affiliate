@@ -30,6 +30,12 @@ This project is compatible with the following plugins and extensions:
 	    Callback Function: zorem_affiliate_registration_form
 	    Permission Callback: account_endpoint_validate
 
+        register_rest_route( 'account', 'my-account/affiliate-registration-form',array(
+		'methods'               => 'POST',
+		'callback'              => array( $this, 'zorem_affiliate_registration_form' ),
+		'permission_callback'   => array( $this, 'account_endpoint_validate' ),
+	    ));
+
    - This endpoint handles the affiliate registration form submission. It expects a POST request with the necessary data for affiliate registration.
      Upon successful submission, it returns the HTML content of the affiliate registration form.
 
@@ -47,6 +53,12 @@ This project is compatible with the following plugins and extensions:
 	   Method: POST
 	   Callback Function: zorem_affiliate_dashboard
 	   Permission Callback: account_endpoint_validate
+
+        register_rest_route( 'account', 'my-account/affiliate-dashboard',array(
+		'methods'               => 'POST',
+		'callback'              => array( $this, 'zorem_affiliate_dashboard' ),
+		'permission_callback'   => array( $this, 'account_endpoint_validate' ),
+	   ));
 
    - This endpoint handles requests related to the affiliate dashboard. It expects a POST request with parameters tabText and key indicating the specific tab to be displayed on the dashboard.
      It retrieves data from the database based on the provided parameters and returns the HTML content of the affiliate dashboard.
