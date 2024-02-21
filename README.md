@@ -27,8 +27,8 @@ This project is compatible with the following plugins and extensions:
    -This function handles the affiliate registration form endpoint. It generates the HTML for the affiliate registration form using the [afwc_registration_form] shortcode and returns it in the response.
 
 public function zorem_affiliate_registration_form(WP_REST_Request $request) {
-	$html = do_shortcode('[afwc_registration_form]');
-	return $this->return_success($html); // Assuming you want to return the post details
+     $html = do_shortcode('[afwc_registration_form]');
+     return $this->return_success($html); // Assuming you want to return the post details
 }
 
 2. zorem_affiliate_dashboard
