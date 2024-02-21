@@ -51,7 +51,7 @@ This project is compatible with the following plugins and extensions:
 
 **Affiliate Dashboard Endpoint**
 
-    Endpoint: /wp-json/account/my-account/affiliate-dashboard
+    Endpoint: https://yourdomaon.com/wp-json/account/my-account/affiliate-dashboard
     Method: POST
     Callback Function: zorem_affiliate_dashboard
     Permission Callback: account_endpoint_validate
@@ -64,69 +64,68 @@ This project is compatible with the following plugins and extensions:
 
     public function zorem_affiliate_dashboard(WP_REST_Request $request) {
         global $wpdb;
-		// $html = do_shortcode('[afwc_dashboard]');
-		$user_id = get_current_user_id();
+        // $html = do_shortcode('[afwc_dashboard]');
+        $user_id = get_current_user_id();
+ 
+        if ($user_id !== 0) {
+           $user = get_userdata($user_id);
+        } else {
+           // User is not logged in
+           echo "User is not logged in.";
+           return;
+        }
+	
+        $afwc_my_account = AFWC_My_Account::get_instance();
+        $tabText = $request['tabText'];
+        $key = $request['key'];
+        $sql_query = $wpdb->get_results(
+             $wpdb->prepare(
+                 "SELECT * FROM wvnxl_afwc_campaigns WHERE status = 'Active'"
+             )
+        );
 
-		if ($user_id !== 0) {
-			$user = get_userdata($user_id);
-		} else {
-			// User is not logged in
-			echo "User is not logged in.";
-			return;
-		}
+        if ($sql_query) {
+            foreach ($sql_query as $row) {
+                $data_array[] = array(
+                    'id' => $row->id,
+                    'title' => $row->title,
+                    'slug' => $row->slug,
+                    'target_link' => $row->target_link,
+                    'short_description' => $row->short_description,
+                    'body' => $row->body,
+                    'status' => $row->status,
+                    'meta_data' => $row->meta_data,
+                    'rules' => $row->rules,
+                    'user_id' => get_current_user_id(),
+                );
+            }
+        } else {
+            // Handle query error
+            echo "Error: " . $wpdb->last_error;
+        }
 
-		$afwc_my_account = AFWC_My_Account::get_instance();
+        ob_start();
 
-		$tabText = $request['tabText'];
-		$key = $request['key'];
+       if ( $tabText == 'reports' && $key == '1' ) {
+            $afwc_my_account->dashboard_content($user);
+       } elseif ( $tabText == 'resources' && $key == '2' ) {
+            $afwc_my_account->profile_resources_content($user);
+       } elseif ( $tabText == 'campaigns' && $key == '3' ) {
+            $afwc_my_account->campaigns_content();
+       }
 
-		$sql_query = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM wvnxl_afwc_campaigns WHERE status = 'Active'"
-			)
-		);
+       $api_response = ob_get_clean();
 
-		if ($sql_query) {
-           foreach ($sql_query as $row) {
-			$data_array[] = array(
-			'id' => $row->id,
-			'title' => $row->title,
-			'slug' => $row->slug,
-			'target_link' => $row->target_link,
-			'short_description' => $row->short_description,
-			'body' => $row->body,
-			'status' => $row->status,
-			'meta_data' => $row->meta_data,
-			'rules' => $row->rules,
-			'user_id' => get_current_user_id(),
-			);
-		    }
-		} else {
-			// Handle query error
-			echo "Error: " . $wpdb->last_error;
-		}
-
-		ob_start();	
-		if ( $tabText == 'reports' && $key == '1' ) {
-			$afwc_my_account->dashboard_content($user);
-		} elseif ( $tabText == 'resources' && $key == '2' ) {
-			$afwc_my_account->profile_resources_content($user);
-		} elseif ( $tabText == 'campaigns' && $key == '3' ) {
-			$afwc_my_account->campaigns_content();
-		}
-
-		$api_response = ob_get_clean();
-
-		$response_data = array(
-			'html' => $api_response,
-			'afwc_contact_admin_email_address' => get_option( 'afwc_contact_admin_email_address', '' ),
-			'afwc_paypal_email'      	   => get_user_meta( $user_id, 'afwc_paypal_email', true ),
-			'campaigns_data' 		   => $data_array, // Include the database query result in the response
-			'campaigns_id'			   => $user_id,
-		);
-
-		return $this->return_success($response_data);
-		}
+       $response_data = array(
+           'html' => $api_response,
+           'afwc_contact_admin_email_address' => get_option( 'afwc_contact_admin_email_address', '' ),
+           'afwc_paypal_email'      	      => get_user_meta( $user_id, 'afwc_paypal_email', true ),
+           'campaigns_data' 		      => $data_array, // Include the database query result in the response
+           'campaigns_id'                     => $user_id,
+       );
+       
+         return $this->return_success($response_data);
+    }
    - This endpoint handles requests related to the affiliate dashboard. It expects a POST request with parameters tabText and key indicating the specific tab to be displayed on the dashboard.
      It retrieves data from the database based on the provided parameters and returns the HTML content of the affiliate dashboard.
 
