@@ -6,7 +6,7 @@ This project extends WooCommerce by creating a custom My Account area using Reac
 
 - **Custom My Account Area**: Reimagines the WooCommerce My Account area using React.js for a more dynamic user experience.
 - **Affiliate Program Integration**: Custom endpoint and integration for the Affiliate for WooCommerce plugin within the custom My Account area.
-- **Plugin Extensibility**: Designed as a plugin to easily integrate with existing WooCommerce setups.
+- **Plugin Extensibility**: Designed as a plugin to easily integrate with existing WooCommerce setup.
 
 ## Prerequisites
 
@@ -19,33 +19,35 @@ Before you begin, ensure you have met the following requirements:
 
 This project is compatible with the following plugins and extensions:
 - Affiliate for WooCommerce:
-- WooCommerce Subscription and WooCommerce API Manager
+- WooCommerce Subscription
+- WooCommerce API Manager
 
 ## Development
 
 **Affiliate Registration Form Endpoint**
 
-	    Endpoint: /wp-json/account/my-account/affiliate-registration-form
-	    Method: POST
-	    Callback Function: zorem_affiliate_registration_form
-	    Permission Callback: account_endpoint_validate
+    Endpoint: https://yourdomaon.com/wp-json/account/my-account/affiliate-registration-form
+    Method: POST
+    Callback Function: zorem_affiliate_registration_form
+    Permission Callback: account_endpoint_validate
 
-        register_rest_route( 'account', 'my-account/affiliate-registration-form',array(
-		'methods'               => 'POST',
-		'callback'              => array( $this, 'zorem_affiliate_registration_form' ),
-		'permission_callback'   => array( $this, 'account_endpoint_validate' ),
-	    ));
+    register_rest_route( 'account', 'my-account/affiliate-registration-form',array(
+        'methods'               => 'POST',
+        'callback'              => array( $this, 'zorem_affiliate_registration_form' ),
+        'permission_callback'   => array( $this, 'account_endpoint_validate' ),
+     ));
+     	
+     public function zorem_affiliate_registration_form(WP_REST_Request $request) {
+         $html = do_shortcode('[afwc_registration_form]');
+         return $this->return_success($html); // Assuming you want to return the post details
+     }
 
    - This endpoint handles the affiliate registration form submission. It expects a POST request with the necessary data for affiliate registration.
      Upon successful submission, it returns the HTML content of the affiliate registration form.
 
-1. zorem_affiliate_registration_form
-   -This function handles the affiliate registration form endpoint. It generates the HTML for the affiliate registration form using the [afwc_registration_form] shortcode and returns it in the response.
+   - zorem_affiliate_registration_form -This function handles the affiliate registration form endpoint. It generates the HTML for the affiliate registration form using the [afwc_registration_form] shortcode and returns it in the response.
 
-		public function zorem_affiliate_registration_form(WP_REST_Request $request) {
-		     $html = do_shortcode('[afwc_registration_form]');
-		     return $this->return_success($html); // Assuming you want to return the post details
-		}
+		
 
 **Affiliate Dashboard Endpoint**
 
