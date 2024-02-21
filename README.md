@@ -26,16 +26,16 @@ This project is compatible with the following plugins and extensions:
 1. zorem_affiliate_registration_form
    -This function handles the affiliate registration form endpoint. It generates the HTML for the affiliate registration form using the [afwc_registration_form] shortcode and returns it in the response.
 
-public function zorem_affiliate_registration_form(WP_REST_Request $request) {
-     $html = do_shortcode('[afwc_registration_form]');
-     return $this->return_success($html); // Assuming you want to return the post details
-}
+		public function zorem_affiliate_registration_form(WP_REST_Request $request) {
+		     $html = do_shortcode('[afwc_registration_form]');
+		     return $this->return_success($html); // Assuming you want to return the post details
+		}
 
 2. zorem_affiliate_dashboard
    -This function handles the affiliate dashboard endpoint. It retrieves data related to active campaigns from the database and generates HTML content for the affiliate dashboard based on the provided parameters (tabText and key).
    The generated HTML content includes dashboard content such as reports, resources, and campaigns. Additionally, it retrieves the contact admin email address and PayPal email associated with the current user.
 
-public function zorem_affiliate_dashboard(WP_REST_Request $request) {
+		public function zorem_affiliate_dashboard(WP_REST_Request $request) {
 		global $wpdb;
 		// $html = do_shortcode('[afwc_dashboard]');
 		$user_id = get_current_user_id();
@@ -100,7 +100,7 @@ public function zorem_affiliate_dashboard(WP_REST_Request $request) {
 		);
 
 		return $this->return_success($response_data);
-	}
+		}
 
 ## Configuration
 
