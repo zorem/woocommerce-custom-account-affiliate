@@ -23,6 +23,16 @@ This project is compatible with the following plugins and extensions:
 
 ## Development
 
+**Affiliate Registration Form Endpoint**
+
+	    Endpoint: /wp-json/account/my-account/affiliate-registration-form
+	    Method: POST
+	    Callback Function: zorem_affiliate_registration_form
+	    Permission Callback: account_endpoint_validate
+
+   - This endpoint handles the affiliate registration form submission. It expects a POST request with the necessary data for affiliate registration.
+     Upon successful submission, it returns the HTML content of the affiliate registration form.
+
 1. zorem_affiliate_registration_form
    -This function handles the affiliate registration form endpoint. It generates the HTML for the affiliate registration form using the [afwc_registration_form] shortcode and returns it in the response.
 
@@ -30,6 +40,18 @@ This project is compatible with the following plugins and extensions:
 		     $html = do_shortcode('[afwc_registration_form]');
 		     return $this->return_success($html); // Assuming you want to return the post details
 		}
+
+**Affiliate Dashboard Endpoint**
+
+	   Endpoint: /wp-json/account/my-account/affiliate-dashboard
+	   Method: POST
+	   Callback Function: zorem_affiliate_dashboard
+	   Permission Callback: account_endpoint_validate
+
+   - This endpoint handles requests related to the affiliate dashboard. It expects a POST request with parameters tabText and key indicating the specific tab to be displayed on the dashboard.
+     It retrieves data from the database based on the provided parameters and returns the HTML content of the affiliate dashboard.
+
+**These endpoints are protected by the account_endpoint_validate permission callback to ensure that only authorized users can access them.**
 
 2. zorem_affiliate_dashboard
    -This function handles the affiliate dashboard endpoint. It retrieves data related to active campaigns from the database and generates HTML content for the affiliate dashboard based on the provided parameters (tabText and key).
