@@ -12,29 +12,95 @@ This project extends WooCommerce by creating a custom My Account area using Reac
 
 Before you begin, ensure you have met the following requirements:
 - WordPress and WooCommerce installed on your web server
-- Basic knowledge of React.js and WordPress plugin development
+- WordPress plugin development
+- Flatsome or Flatsome Child Theme installed and activated on your WordPress site
 
-## Installation
+## Compatibility
 
-1. **Clone the Repository**
+This project is compatible with the following plugins and extensions:
+- Affiliate for WooCommerce:
+- WooCommerce Subscription and WooCommerce API Manager
 
-   ```
-   git clone https://github.com/yourusername/woocommerce-custom-account-affiliate.git
-   ```
+## Development
 
-2. **Install Dependencies**
+1. zorem_affiliate_registration_form
+   -This function handles the affiliate registration form endpoint. It generates the HTML for the affiliate registration form using the [afwc_registration_form] shortcode and returns it in the response.
 
-   Navigate to the plugin directory and install any required dependencies.
+public function zorem_affiliate_registration_form(WP_REST_Request $request) {
+	$html = do_shortcode('[afwc_registration_form]');
+	return $this->return_success($html); // Assuming you want to return the post details
+}
 
-   ```
-   cd woocommerce-custom-account-affiliate
-   npm install
-   ```
+2. zorem_affiliate_dashboard
+   -This function handles the affiliate dashboard endpoint. It retrieves data related to active campaigns from the database and generates HTML content for the affiliate dashboard based on the provided parameters (tabText and key).
+   The generated HTML content includes dashboard content such as reports, resources, and campaigns. Additionally, it retrieves the contact admin email address and PayPal email associated with the current user.
 
-3. **Activate the Plugin**
+public function zorem_affiliate_dashboard(WP_REST_Request $request) {
+		global $wpdb;
+		// $html = do_shortcode('[afwc_dashboard]');
+		$user_id = get_current_user_id();
 
-   - Upload the plugin to your WordPress website via the WordPress admin panel or FTP.
-   - Navigate to the Plugins page in the WordPress admin panel and activate the "WooCommerce Custom My Account with Affiliate" plugin.
+		if ($user_id !== 0) {
+			$user = get_userdata($user_id);
+		} else {
+			// User is not logged in
+			echo "User is not logged in.";
+			return;
+		}
+
+		// echo '<pre>';print_r($_REQUEST);echo '</pre>';
+		$afwc_my_account_1 = AFWC_My_Account::get_instance();
+
+		$tabText = $request['tabText'];
+		$key = $request['key'];
+
+		$sql_query = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM wvnxl_afwc_campaigns WHERE status = 'Active'"
+			)
+		);
+
+		if ($sql_query) {
+			foreach ($sql_query as $row) {
+				$data_array[] = array(
+					'id' => $row->id,
+					'title' => $row->title,
+					'slug' => $row->slug,
+					'target_link' => $row->target_link,
+					'short_description' => $row->short_description,
+					'body' => $row->body,
+					'status' => $row->status,
+					'meta_data' => $row->meta_data,
+					'rules' => $row->rules,
+					'user_id' => get_current_user_id(),
+				);
+			}
+		} else {
+			// Handle query error
+			echo "Error: " . $wpdb->last_error;
+		}
+
+		ob_start();	
+		if ( $tabText == 'reports' && $key == '1' ) {
+			$afwc_my_account_1->dashboard_content($user);
+		} elseif ( $tabText == 'resources' && $key == '2' ) {
+			$afwc_my_account_1->profile_resources_content($user);
+		} elseif ( $tabText == 'campaigns' && $key == '3' ) {
+			$afwc_my_account_1->campaigns_content();
+		}
+
+		$api_response = ob_get_clean();
+
+		$response_data = array(
+			'html' => $api_response,
+			'afwc_contact_admin_email_address' 	=> get_option( 'afwc_contact_admin_email_address', '' ),
+			'afwc_paypal_email'      			=> get_user_meta( $user_id, 'afwc_paypal_email', true ),
+			'campaigns_data' 					=> $data_array, // Include the database query result in the response
+			'campaigns_id'						=> $user_id,
+		);
+
+		return $this->return_success($response_data);
+	}
 
 ## Configuration
 
@@ -43,43 +109,3 @@ After activating the plugin, you'll need to configure it to work with your WooCo
 ## Usage
 
 Explain how users can navigate the custom My Account area, access the affiliate program features, and any additional functionality provided by your plugin. Include screenshots or GIFs to guide the users visually.
-
-## Development
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). For further development and customization, follow the standard practices for developing with React.js and WooCommerce plugins.
-
-## Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## Contact
-
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
-
-Project Link: [https://github.com/yourusername/woocommerce-custom-account-affiliate](https://github.com/yourusername/woocommerce-custom-account-affiliate)
-
-## Acknowledgements
-
-- [WooCommerce](https://woocommerce.com/)
-- [Affiliate for WooCommerce](https://woocommerce.com/products/affiliate-for-woocommerce/)
-- [React.js](https://reactjs.org/)
-
-### Customization Tips:
-
-- **Project Details**: Be sure to replace placeholders (like `https://github.com/yourusername/woocommerce-custom-account-affiliate`) with the actual details of your project.
-- **Features and Configuration**: Provide more specific details about the features of your plugin and any configuration steps that users need to follow.
-- **Screenshots and GIFs**: Adding visuals can greatly help in explaining how to navigate or use the features of your plugin.
-- **License**: If you choose a different license, remember to update the License section accordingly.
-- **Contact Information**: Update the contact section with your or your organization's contact information.
-
-This template should provide a good starting point for your GitHub README file, making your project accessible and understandable to potential users and contributors.
