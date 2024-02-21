@@ -61,20 +61,20 @@ This project is compatible with the following plugins and extensions:
 		);
 
 		if ($sql_query) {
-			foreach ($sql_query as $row) {
-				$data_array[] = array(
-					'id' => $row->id,
-					'title' => $row->title,
-					'slug' => $row->slug,
-					'target_link' => $row->target_link,
-					'short_description' => $row->short_description,
-					'body' => $row->body,
-					'status' => $row->status,
-					'meta_data' => $row->meta_data,
-					'rules' => $row->rules,
-					'user_id' => get_current_user_id(),
-				);
-			}
+           foreach ($sql_query as $row) {
+			$data_array[] = array(
+			'id' => $row->id,
+			'title' => $row->title,
+			'slug' => $row->slug,
+			'target_link' => $row->target_link,
+			'short_description' => $row->short_description,
+			'body' => $row->body,
+			'status' => $row->status,
+			'meta_data' => $row->meta_data,
+			'rules' => $row->rules,
+			'user_id' => get_current_user_id(),
+			);
+		    }
 		} else {
 			// Handle query error
 			echo "Error: " . $wpdb->last_error;
@@ -93,10 +93,10 @@ This project is compatible with the following plugins and extensions:
 
 		$response_data = array(
 			'html' => $api_response,
-			'afwc_contact_admin_email_address' 	=> get_option( 'afwc_contact_admin_email_address', '' ),
-			'afwc_paypal_email'      			=> get_user_meta( $user_id, 'afwc_paypal_email', true ),
-			'campaigns_data' 					=> $data_array, // Include the database query result in the response
-			'campaigns_id'						=> $user_id,
+			'afwc_contact_admin_email_address' => get_option( 'afwc_contact_admin_email_address', '' ),
+			'afwc_paypal_email'      	   => get_user_meta( $user_id, 'afwc_paypal_email', true ),
+			'campaigns_data' 		   => $data_array, // Include the database query result in the response
+			'campaigns_id'			   => $user_id,
 		);
 
 		return $this->return_success($response_data);
